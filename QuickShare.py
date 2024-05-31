@@ -1,7 +1,15 @@
+import base64
 import json
+import os.path
+from tkinter import *
 from sys import argv
 from src.server import Server
 from src.client import Client
+from src.colors import TerminalColor as TC
+import time
+
+def log(txt):
+    print('{}INFO{} {}: {}'.format(TC.INFO_GREEN, TC._END, time.time_ns(), txt))
 
 def main():
     # Promotion
@@ -35,9 +43,33 @@ def main():
             if argv_len == 3:
                 host = argv[3]
 
-        soft_client = Client(port=port, host=host)
-        soft_client.connect()
-        soft_client.send(data=bytes("{'Title': 'Test'}", 'utf-8'))
+        file_path = input('Send File Path: ')
+        if os.path.isfile(file_path):
+            log('{} File is Exists.'.format(file_path))
+            log('Making client method...')
+            soft_client = Client(port=port, host=host)
+            log('Done...')
+            log('Try connecting to server...')
+            soft_client.connect()
+            log('Done...')
+            log('Preparing to send file...')
+            with open(file_path, 'rb') as file:
+                file_byte = file.read()
+            # info = {'file': 'filename', 'description': '.txt?', 'byte': 'file-byte'}
+            file_name = os.path.basename(file_path)
+            file_type = file_name.split('.')[-1]
+            data_obj = {
+                "file": file_name,
+                "description":file_type,
+                "byte": base64.b64encode(file_byte).decode('utf-8'),
+            }
+            data = base64.b64encode(json.dumps(data_obj))
+            soft_client.send(data=data)
+
+
+        pass
+    elif mode == "help":
+        print()
 
     return
 
