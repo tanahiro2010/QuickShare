@@ -2,6 +2,7 @@ import json
 import socket
 import base64
 from src.colors import TerminalColor as TC
+from src.Socket import Socket as sk
 import time
 
 def log(txt):
@@ -32,6 +33,7 @@ class Server():
 
         return
 
+
     def Begin_server(self):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.bind((self.host, self.port))
@@ -39,11 +41,14 @@ class Server():
             while True:
                 conn, addr = s.accept()
                 with conn:
-                    data = conn.recv(1024)
-                    data = data.decode('utf-8')
+                    data: bytes = sk.receive_full_data(conn)
+                    # base64.b64encode(json.dumps(data_obj).encode('utf-8'))
+                    data_byte: bytes = base64.b64decode(data)
+                    data_str: str = data_byte.decode()
                     log('Send file from {}'.format(addr))
 
-                    file_info = json.loads(data)
+                    file_info = json.loads(data_str)
+                    print(file_info)
 
                     keys: list = file_info.keys()
                     info_length = len(file_info)
@@ -53,7 +58,7 @@ class Server():
                             file_name = file_info['file']
                             file_type = file_info['description']
                             file_byte = bytes(base64.b64decode(file_info['byte'].encode()))
-                            log('File INFO====\nTitle: {}\nType: {}\n'.format(file_name, file_type))
+                            log('File INFO => Title: {} && Type: {}'.format(file_name, file_type))
                             isSave = input('Do you save (y/n) $ ').lower()
                             if isSave == "y" or isSave == "yes":
                                 log('Try saving file...')
@@ -65,5 +70,16 @@ class Server():
 
                             pass
 
-                    print('keys : {}'.format(keys))
+                        else:
+                            print('[{}WARNING!!{}] We might be under a DOS attack!!'.format(TC.WARN, TC._END))
+                            pass
+                    else:
+                        print('[{}WARNING!!{}] We might be under a DOS attack!!'.format(TC.WARN, TC._END))
+                        pass
+
+                    isContinue = input('Do you want to continue? (y/n) $ ')
+                    if isContinue == "y" or isContinue == "yes":
+                        pass
+                    else:
+                        exit()
         return

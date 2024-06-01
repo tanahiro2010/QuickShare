@@ -34,6 +34,7 @@ def main():
         print('Server IP_Address: {}\nPORT: {}'.format(soft_client.host, soft_client.port))
         soft_client.Begin_server()
         return
+
     elif mode == "send_file":
         host = "127.0.0.1"
         if argv_len == 1:
@@ -50,7 +51,12 @@ def main():
             soft_client = Client(port=port, host=host)
             log('Done...')
             log('Try connecting to server...')
-            soft_client.connect()
+            try:
+                soft_client.connect()
+            except Exception as e:
+                print('Error connecting to server: {}'.format(e))
+                return
+
             log('Done...')
             log('Preparing to send file...')
             with open(file_path, 'rb') as file:
@@ -60,10 +66,10 @@ def main():
             file_type = file_name.split('.')[-1]
             data_obj = {
                 "file": file_name,
-                "description":file_type,
+                "description": file_type,
                 "byte": base64.b64encode(file_byte).decode('utf-8'),
             }
-            data = base64.b64encode(json.dumps(data_obj))
+            data: bytes = base64.b64encode(json.dumps(data_obj).encode('utf-8')) + b"END"
             soft_client.send(data=data)
 
 
