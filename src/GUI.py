@@ -11,7 +11,8 @@ from src.client import Client
 from src.Socket import Socket
 
 class ServerSettings:
-    def __init__(self):
+    def __init__(self, root):
+        root.destroy()
         self.root = tk.Tk()
         self.root.geometry('600x400')
         self.root.title('QuickShare - Server Settings')
@@ -30,11 +31,13 @@ class ServerSettings:
         self.Hostname.place(x=0, y=55, width=200, height=30)
         self.Hostname_entry.place(x=200, y=55, width=300, height=30)
         self.Config_Enter.place(x=150, y=100, width=300, height=30)
+
+        self.root.mainloop()
         return
 
     def EnterConfig(self):
         self.hostname = str(self.Hostname_entry.get())
-        self.port = int(self.Port_entry.get())
+        self.port: int = int(self.Port_entry.get())
 
         if (self.port < 0 and self.port > 65535):
             messagebox.showwarning('Warning', 'Port must be between 0 and 65535')

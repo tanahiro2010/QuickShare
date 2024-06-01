@@ -14,6 +14,7 @@ import os
 
 class ServerGUI:
     def __init__(self, host, port):
+        print("ServerGUI is initialized")
         self.host = host
         self.port = port
         self.root = tk.Tk()
@@ -26,16 +27,16 @@ class ServerGUI:
         self.FileType = tk.Label(self.root, text='File Type: ', font=('Helvetica', 20))
         self.SaveButton = tk.Button(self.root, text='Save', font=('Helvetica', 20), command=lambda: self.Save())
 
+        self.root.destroy()
         return
 
-    def Begin_Server(self):
+    def Begin_Server(self, host, port):
+        print('Begin_Server')
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as Socket:
-            host = self.host
-            port = self.port
             print('Host: {}\nPort: {}'.format(host, port))
             Socket.bind((host, port))
             Socket.listen()
-
+            print('Begin Server')
             while True:
                 conn, addr = Socket.accept()
                 with conn:
@@ -74,12 +75,34 @@ class ServerGUI:
     def display(self):
         self.FileName.config(text=f'FileName :')
         self.FileType.config(text=f'File Type:')
-        self.FileName.update()
-        self.FileType.update()
+        self.FileType.pack()
+        self.FileName.pack()
 
         self.root.mainloop()
+        return
+
+    def test_gui(self):
+        root = tk.Tk()
+        root.geometry('750x500')
+        root.title('QuickShare - Server Controller')
+        root.resizable(False, False)
+        tk.Label(root, text='Control PANEL', font=('Cascadia Mono', 20)).pack()
+        tk.Label(root, text='HOST', font=('Cascadia Mono', 20)).pack()
+        host_input = tk.Entry(root, font=('Helvetica', 20), justify='center', validate='all').pack()
+        tk.Label(root, text='PORT', font=('Helvetica', 20)).pack()
+        port_input = tk.Entry(root, font=('Cascadia Mono', 20), justify='center').pack()
+
+        enter_button = tk.Button(root, text="Boot server", justify='center', font=('Helvetica', 20), command=lambda: self.Begin_Server(host_input.get(), port_input.get())).pack()
 
 
-"""serverGUI = ServerGUI('localhost', 5000)
-serverGUI.Save()
-serverGUI.display()"""
+        root.mainloop()
+
+
+        return
+
+
+
+serverGUI = ServerGUI('localhost', 5050)
+serverGUI.test_gui()
+#serverGUI.Save()
+#serverGUI.display()

@@ -26,7 +26,7 @@ def main():
 
     # Objects
     Title = tk.Label(root, text='QuickShare', font=('Cascadia Mono', 24))
-    BeginServer_button = tk.Button(root, text='BeginServer', command=lambda: ServerSettings())
+    BeginServer_button = tk.Button(root, text='Begin Server', command=lambda: ServerSettings(root))
     fileSelectButton = tk.Button(root, text='Select File', command=lambda: App.fileSelect())
 
 
