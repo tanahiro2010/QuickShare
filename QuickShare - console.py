@@ -3,7 +3,7 @@ import json
 import os.path
 from tkinter import *
 from sys import argv
-from src.server import Server
+from src.Server_console import Server_console as Server
 from src.client import Client
 from src.colors import TerminalColor as TC
 import time

@@ -8,7 +8,7 @@ import time
 def log(txt):
     print('{}INFO{} {}: {}'.format(TC.INFO_BLUE, TC._END, time.time_ns(), txt))
 
-class Server():
+class Server_console():
     def __init__(self, port):
         self.port = port
         with open(file='./data/config.json', mode='r') as f:

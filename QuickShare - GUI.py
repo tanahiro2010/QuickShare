@@ -6,7 +6,7 @@ from tkinter import messagebox
 from tkinter import filedialog
 # MyPrograms
 from src.client import Client
-from src.server import Server
+from src.Server_GUI import ServerGUI as Server
 from src.Socket import Socket
 from src.GUI import *
 # Other
