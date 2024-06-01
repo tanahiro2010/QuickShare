@@ -26,14 +26,14 @@ class ServerGUI:
         self.FileType = tk.Label(self.root, text='File Type: ', font=('Helvetica', 20))
         self.SaveButton = tk.Button(self.root, text='Save', font=('Helvetica', 20), command=lambda: self.Save())
 
-        self.Title_label.grid(row=0, column=0)
-        self.FileName.grid(row=1, column=0)
-        self.FileType.grid(row=2, column=0)
         return
 
     def Begin_Server(self):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as Socket:
-            Socket.bind((self.host, self.port))
+            host = self.host
+            port = self.port
+            print('Host: {}\nPort: {}'.format(host, port))
+            Socket.bind((host, port))
             Socket.listen()
 
             while True:
@@ -45,6 +45,11 @@ class ServerGUI:
                     self.file_info = json.loads(data_str)
                     file_name = self.file_info['file']
                     file_type = self.file_info['description']
+
+                    self.Title_label.grid(row=0, column=0)
+                    self.FileName.grid(row=1, column=0)
+                    self.FileType.grid(row=2, column=0)
+
                     self.FileName.config(text=f'FileName : {file_name}')
                     self.FileType.config(text=f'FileType: {file_type}')
                     self.FileName.update()
