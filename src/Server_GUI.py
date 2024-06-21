@@ -30,9 +30,14 @@ class ServerGUI:
         self.root.destroy()
         return
 
-    def Begin_Server(self, host, port):
+    def Begin_Server(self, controll_root, host: str, port: int):
+        controll_root.destroy()
         print('Begin_Server')
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as Socket:
+            root = tk.Tk()
+            root.geometry('750x500')
+            root.title('QuickShare - Server Controller')
+            root.resizable(False, False)
             print('Host: {}\nPort: {}'.format(host, port))
             Socket.bind((host, port))
             Socket.listen()
@@ -88,15 +93,16 @@ class ServerGUI:
         root.resizable(False, False)
         tk.Label(root, text='Control PANEL', font=('Cascadia Mono', 20)).pack()
         tk.Label(root, text='HOST', font=('Cascadia Mono', 20)).pack()
-        host_input = tk.Entry(root, font=('Helvetica', 20), justify='center', validate='all').pack()
+        host_input = (tk.Entry(root, font=('Helvetica', 20), justify='center', validate='all'))
+        host_input.pack()
         tk.Label(root, text='PORT', font=('Helvetica', 20)).pack()
-        port_input = tk.Entry(root, font=('Cascadia Mono', 20), justify='center').pack()
+        port_input = (tk.Entry(root, font=('Cascadia Mono', 20), justify='center'))
+        port_input.pack()
 
-        enter_button = tk.Button(root, text="Boot server", justify='center', font=('Helvetica', 20), command=lambda: self.Begin_Server(host_input.get(), port_input.get())).pack()
+        enter_button = tk.Button(root, text="Boot server", justify='center', font=('Helvetica', 20), command=lambda: self.Begin_Server(root, host_input.get(), int(port_input.get()))).pack()
 
 
         root.mainloop()
-
 
         return
 
